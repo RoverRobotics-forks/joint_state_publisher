@@ -482,7 +482,7 @@ def main(input_args=None):
     with open(parsed_args.urdf_file, 'r') as infp:
         urdf = infp.read()
 
-    initial_parameters=[
+    parameter_overrides = [
         rclpy.parameter.Parameter('num_rows', rclpy.parameter.Parameter.Type.INTEGER, 0),
         rclpy.parameter.Parameter('publish_default_efforts', rclpy.parameter.Parameter.Type.BOOL, False),
         rclpy.parameter.Parameter('publish_default_positions', rclpy.parameter.Parameter.Type.BOOL, True),
@@ -494,7 +494,9 @@ def main(input_args=None):
         rclpy.parameter.Parameter('use_smallest_joint_limits', rclpy.parameter.Parameter.Type.BOOL, True),
     ]
 
-    node = rclpy.create_node('joint_state_publisher', initial_parameters=initial_parameters)
+    node = rclpy.create_node('joint_state_publisher',
+                             automatically_declare_parameters_from_overrides=True,
+                             parameter_overrides=parameter_overrides)
     jsp = JointStatePublisher(node, urdf)
 
     if jsp.gui is None:
